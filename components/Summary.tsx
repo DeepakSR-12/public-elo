@@ -1,11 +1,22 @@
+"use client";
 import { Button } from "@nextui-org/button";
+import axios from "axios";
 import React, { useRef, useState, useEffect } from "react";
+import { toast } from "react-hot-toast";
 import { TypeAnimation } from "react-type-animation";
+import Loader from "./Loader";
 
-const Summary = () => {
-  const [summary, setSummary] = useState(
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-  );
+const Summary = ({
+  assistantId,
+  summaryText,
+  icon,
+}: {
+  assistantId: string;
+  summaryText: string;
+  icon: JSX.Element;
+}) => {
+  const [summary, setSummary] = useState(summaryText ?? "");
+  const [isLoading, setIsLoading] = useState(false);
   const ref = useRef<any>(null);
 
   const scrollToBottom = () => {
@@ -27,9 +38,21 @@ const Summary = () => {
     };
   }, []);
 
-  const fetchSummary = () => {
-    // Fetch Summary logic here
-    setSummary("New fetched Summary text...");
+  const fetchSummary = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post("/api/conversation", {
+        message: "Generate a summary of the earnings report",
+        assistantId,
+      });
+
+      setSummary(response.data);
+      toast.success("Latest Summary is fetched!.");
+    } catch (error: any) {
+      toast.error("Something went wrong!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -40,8 +63,13 @@ const Summary = () => {
           !summary ? "justify-center items-center h-full" : ""
         }`}
       >
-        {!!summary ? (
+        {!!isLoading ? (
+          <div className="p-8 rounded-lg w-full h-full bg-muted flex items-center justify-center">
+            <Loader icon={icon} message="Summarizing..." />
+          </div>
+        ) : !!summary ? (
           <TypeAnimation
+            key={summary}
             splitter={(str) => str.split(/(?= )/)}
             sequence={[summary]}
             wrapper="span"
@@ -51,13 +79,25 @@ const Summary = () => {
             style={{ display: "inline-block" }}
           />
         ) : (
-          <Button color="default" variant="bordered" onClick={fetchSummary}>
+          <Button
+            isLoading={isLoading}
+            isDisabled={isLoading}
+            color="default"
+            variant="bordered"
+            onClick={fetchSummary}
+          >
             Fetch Latest Summary
           </Button>
         )}
       </div>
-      <div className="mt-auto">
-        <Button color="default" variant="bordered" onClick={fetchSummary}>
+      <div className="flex justify-end mt-auto">
+        <Button
+          isLoading={isLoading}
+          isDisabled={isLoading}
+          color="default"
+          variant="bordered"
+          onClick={fetchSummary}
+        >
           Fetch Latest Summary
         </Button>
       </div>

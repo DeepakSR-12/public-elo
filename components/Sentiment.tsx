@@ -1,11 +1,22 @@
+"use client";
 import { Button } from "@nextui-org/button";
+import axios from "axios";
 import React, { useRef, useState, useEffect } from "react";
+import { toast } from "react-hot-toast";
 import { TypeAnimation } from "react-type-animation";
+import Loader from "./Loader";
 
-const Sentiment = () => {
-  const [sentiment, setSentiment] = useState(
-    "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-  );
+const Sentiment = ({
+  assistantId,
+  sentimentText,
+  icon,
+}: {
+  assistantId: string;
+  sentimentText: string;
+  icon: JSX.Element;
+}) => {
+  const [sentiment, setSentiment] = useState(sentimentText ?? "");
+  const [isLoading, setIsLoading] = useState(false);
   const ref = useRef<any>(null);
 
   const scrollToBottom = () => {
@@ -27,9 +38,28 @@ const Sentiment = () => {
     };
   }, []);
 
-  const fetchSentiment = () => {
-    // Fetch sentiment logic here
-    setSentiment("New fetched sentiment text...");
+  const fetchSentiment = async () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setSentiment(
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a ty"
+      );
+      setIsLoading(false);
+      toast.success("Latest Sentiment is fetched!.");
+    }, 3000);
+    // setIsLoading(true);
+    // try {
+    //   const response = await axios.post("/api/conversation", {
+    //     message: "Give a sentiment analysis on the earnings report.",
+    //     assistantId,
+    //   });
+    //   setSentiment(response.data);
+    // toast.success("Latest Sentiment is fetched!.");
+    // } catch (error: any) {
+    // toast.error("Something went wrong!");
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   return (
@@ -40,8 +70,13 @@ const Sentiment = () => {
           !sentiment ? "justify-center items-center h-full" : ""
         }`}
       >
-        {!!sentiment ? (
+        {!!isLoading ? (
+          <div className="p-8 rounded-lg w-full h-full bg-muted flex items-center justify-center">
+            <Loader icon={icon} message="Analyzing Sentiment..." />
+          </div>
+        ) : !!sentiment ? (
           <TypeAnimation
+            key={sentiment}
             splitter={(str) => str.split(/(?= )/)}
             sequence={[sentiment]}
             wrapper="span"
@@ -51,13 +86,25 @@ const Sentiment = () => {
             style={{ display: "inline-block" }}
           />
         ) : (
-          <Button color="default" variant="bordered" onClick={fetchSentiment}>
+          <Button
+            isLoading={isLoading}
+            isDisabled={isLoading}
+            color="default"
+            variant="bordered"
+            onClick={fetchSentiment}
+          >
             Fetch Latest Sentiment
           </Button>
         )}
       </div>
-      <div className="mt-auto">
-        <Button color="default" variant="bordered" onClick={fetchSentiment}>
+      <div className="flex justify-end mt-auto">
+        <Button
+          isLoading={isLoading}
+          isDisabled={isLoading}
+          color="default"
+          variant="bordered"
+          onClick={fetchSentiment}
+        >
           Fetch Latest Sentiment
         </Button>
       </div>

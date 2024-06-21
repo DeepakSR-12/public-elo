@@ -5,15 +5,20 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import { data, dataLabel, mockEarningDataCompanies } from "@/constants";
-import WorkTabs from "./Tabs";
+import { CompanyData, dataLabel } from "@/constants";
+import OptionsTabs from "./OptionsTabs";
 
-export default function Collapse() {
+export default function Collapse({
+  earningsData,
+}: {
+  earningsData: CompanyData[];
+}) {
   return (
     <Accordion
       fullWidth
       variant="splitted"
       aria-orientation="vertical"
+      defaultExpandedKeys={["Meta"]}
       motionProps={{
         variants: {
           enter: {
@@ -51,12 +56,12 @@ export default function Collapse() {
         },
       }}
     >
-      {mockEarningDataCompanies.map((org, index) => (
+      {earningsData.map((company) => (
         <AccordionItem
-          key={org.company}
-          startContent={org.icon}
-          title={org.company}
-          indicator={org.icon}
+          key={company.companyName}
+          startContent={company.icon}
+          title={company.companyName}
+          indicator={company.icon}
         >
           <div className="grid lg:grid-cols-2 w-full">
             <div>
@@ -74,20 +79,20 @@ export default function Collapse() {
                 </Select>
               </div>
               <div className="grid lg:grid-cols-2 gap-4 text-left py-4 px-2 text-sm">
-                {Object.keys(data).map((item) => (
+                {Object.keys(company.earningsReport).map((item) => (
                   <div
                     key={item}
                     className="flex flex-row gap-2 p-2 text-wrap whitespace-nowrap"
                   >
                     <div className="">{dataLabel[item]}:</div>
-                    <div className="font-bold">{data[item]}</div>
+                    <div className="font-bold">
+                      {company.earningsReport[item]}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
-            <div>
-              <WorkTabs />
-            </div>
+            <OptionsTabs {...company} />
           </div>
         </AccordionItem>
       ))}

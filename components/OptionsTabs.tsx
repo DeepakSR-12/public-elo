@@ -1,37 +1,55 @@
 import React from "react";
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
-import { GalleryIcon } from "./icons/GalleryIcon";
-import { MusicIcon } from "./icons/MusicIcon";
-import { VideoIcon } from "./icons/VideoIcon";
+import { CompanyData } from "@/constants";
 import Summary from "./Summary";
+import { VideoIcon } from "./icons/VideoIcon";
 import Sentiment from "./Sentiment";
+import { GalleryIcon } from "./icons/GalleryIcon";
 import AskAI from "./AskAI";
+import { MusicIcon } from "./icons/MusicIcon";
 
-export default function WorkTabs() {
-  let tabs = [
+export default function OptionsTabs({
+  assistantId,
+  summary,
+  icon,
+  sentiment,
+}: CompanyData) {
+  const tabsData = [
     {
       id: "summary",
       label: "Summary",
-      content: <Summary />,
+      content: (
+        <Summary assistantId={assistantId} summaryText={summary} icon={icon} />
+      ),
       icon: <VideoIcon />,
     },
     {
       id: "sentiment",
       label: "Sentiment",
-      content: <Sentiment />,
+      content: (
+        <Sentiment
+          assistantId={assistantId}
+          sentimentText={sentiment}
+          icon={icon}
+        />
+      ),
       icon: <GalleryIcon />,
     },
     {
       id: "askAI",
       label: "Ask AI",
-      content: <AskAI />,
+      content: <AskAI assistantId={assistantId} icon={icon} />,
       icon: <MusicIcon />,
     },
   ];
-
   return (
     <div className="flex w-full h-full flex-col">
-      <Tabs aria-label="Dynamic tabs" items={tabs} variant="bordered" fullWidth>
+      <Tabs
+        aria-label="Dynamic tabs"
+        items={tabsData}
+        variant="bordered"
+        fullWidth
+      >
         {({ id, label, content, icon }) => (
           <Tab
             key={id}

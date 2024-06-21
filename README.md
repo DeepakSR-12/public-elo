@@ -1,8 +1,5 @@
-# Next.js & NextUI Template
-
-This is a template for creating applications using Next.js 14 (app directory) and NextUI (v2).
-
-[Try it on CodeSandbox](https://githubbox.com/nextui-org/next-app-template)
+# Public EloGPT
+## Gather insights, summary, sentiment and earnings information!
 
 ## Technologies Used
 
@@ -21,7 +18,7 @@ This is a template for creating applications using Next.js 14 (app directory) an
 To create a new project based on this template using `create-next-app`, run the following command:
 
 ```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
+npx create-next-app <project-name>
 ```
 
 ### Install dependencies
@@ -37,17 +34,3 @@ npm install
 ```bash
 npm run dev
 ```
-
-### Setup pnpm (optional)
-
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
-
-```bash
-public-hoist-pattern[]=*@nextui-org/*
-```
-
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
-
-## License
-
-Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
