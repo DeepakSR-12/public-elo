@@ -23,7 +23,7 @@ const AskAI = ({
   icon,
 }: {
   assistantId: string;
-  icon: ReactElement;
+  icon?: ReactElement;
 }) => {
   const [messages, setMessages] = useState<Message[]>(MESSAGES);
   const ref = useRef<any>(null);

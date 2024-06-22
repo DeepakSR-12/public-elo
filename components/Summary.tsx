@@ -7,13 +7,15 @@ import { TypeAnimation } from "react-type-animation";
 import Loader from "./Loader";
 
 const Summary = ({
+  companyName,
   assistantId,
   summaryText,
   icon,
 }: {
+  companyName: string;
   assistantId: string;
-  summaryText: string;
-  icon: JSX.Element;
+  summaryText?: string;
+  icon?: JSX.Element;
 }) => {
   const [summary, setSummary] = useState(summaryText ?? "");
   const [isLoading, setIsLoading] = useState(false);
@@ -42,12 +44,16 @@ const Summary = ({
     setIsLoading(true);
     try {
       const response = await axios.post("/api/assistant", {
-        message: "Generate a summary of the earnings report",
+        message: "Generate a summary of the earnings report; Not in JSON;",
         assistantId,
+        type: "summary",
+        companyName,
       });
 
-      setSummary(response.data);
-      toast.success("Latest Summary is fetched!.");
+      if (!!response?.data) {
+        setSummary(response.data);
+        toast.success("Latest Summary is fetched!.");
+      }
     } catch (error: any) {
       toast.error("Something went wrong!");
     } finally {

@@ -1,3 +1,5 @@
+import { CompanyData } from "@/constants";
+import { addCompany } from "@/lib/companiesData";
 import {
   createEmptyThread,
   createFile,
@@ -27,7 +29,6 @@ export async function POST(req: Request) {
       return new NextResponse("earningReport is required", { status: 400 });
     }
 
-    // Example logging of the form data
     console.log({ companyName, earningReport });
 
     const fileId = await createFile(client, earningReport);
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
 
     console.log({ vectorId });
 
-    if (vectorId) {
+    if (vectorId && fileId) {
       const assistantId = await createJsonAssistant(
         client,
         companyName,
@@ -47,24 +48,29 @@ export async function POST(req: Request) {
 
       const thread = await createEmptyThread(client);
 
-      const messages = await fetchMessageFromAssistant(
-        client,
-        thread?.id,
-        assistantId,
-        "Retrieve earnings report details for a company."
-      );
+      if (thread?.id && assistantId) {
+        const messages = await fetchMessageFromAssistant(
+          client,
+          thread?.id,
+          assistantId,
+          "Retrieve earnings report details for a company in JSON"
+        );
 
-      console.log({ response: JSON.stringify(messages) });
+        const parsedMessage =
+          typeof messages === "string"
+            ? JSON.parse(messages)
+            : (messages[0] as TextContentBlock).text.value;
 
-      const parsedMessage =
-        typeof messages === "string"
-          ? messages
-          : (messages[0] as TextContentBlock).text.value;
+        const companyPayload: CompanyData = {
+          assistantId,
+          companyName,
+          earningsReport: JSON.parse(parsedMessage),
+        };
 
-      console.log({ parsedMessage });
-      return NextResponse.json(parsedMessage);
+        await addCompany(companyPayload);
 
-      //   return new NextResponse("Assistance is created", { status: 200 });
+        return new NextResponse("Assistance is created", { status: 200 });
+      }
     }
   } catch (error) {
     return new NextResponse("Internal Server Error", { status: 500 });

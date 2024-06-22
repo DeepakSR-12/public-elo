@@ -22,10 +22,12 @@ export default function EarningReportModal({
   isOpen,
   onOpenChange,
   closeModal,
+  fetchCompanies,
 }: {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   closeModal: () => void;
+  fetchCompanies: () => void;
 }) {
   const form = useForm<z.infer<typeof earningReportSchema>>({
     resolver: zodResolver(earningReportSchema),
@@ -57,6 +59,8 @@ export default function EarningReportModal({
           "Content-Type": "multipart/form-data",
         },
       });
+
+      await fetchCompanies();
 
       setUploadedFile(null);
       closeModal();

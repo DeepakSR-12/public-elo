@@ -10,6 +10,7 @@ import { MusicIcon } from "./icons/MusicIcon";
 
 export default function OptionsTabs({
   assistantId,
+  companyName,
   summary,
   icon,
   sentiment,
@@ -19,7 +20,12 @@ export default function OptionsTabs({
       id: "summary",
       label: "Summary",
       content: (
-        <Summary assistantId={assistantId} summaryText={summary} icon={icon} />
+        <Summary
+          companyName={companyName}
+          assistantId={assistantId}
+          summaryText={summary}
+          icon={icon}
+        />
       ),
       icon: <VideoIcon />,
     },
@@ -28,6 +34,7 @@ export default function OptionsTabs({
       label: "Sentiment",
       content: (
         <Sentiment
+          companyName={companyName}
           assistantId={assistantId}
           sentimentText={sentiment}
           icon={icon}

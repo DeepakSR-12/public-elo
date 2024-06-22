@@ -1,5 +1,8 @@
 import OpenAI from "openai";
-import { MessageContent } from "openai/resources/beta/threads/messages";
+import {
+  MessageContent,
+  TextContentBlock,
+} from "openai/resources/beta/threads/messages";
 import { setTimeout } from "timers/promises";
 
 export async function createFile(openai: OpenAI, file: File) {
@@ -149,79 +152,93 @@ export async function fetchMessageFromAssistant(
   userMessage: string
 ): Promise<MessageContent[] | string> {
   try {
-    await openai.beta.threads.messages.create(threadId, {
-      role: "user",
-      content: userMessage,
-    });
+    if (userMessage) {
+      await openai.beta.threads.messages.create(threadId, {
+        role: "user",
+        content: `${userMessage}`,
+      });
 
-    const run = await openai.beta.threads.runs.createAndPoll(threadId, {
-      assistant_id: assistantId,
-    });
+      await setTimeout(1000);
 
-    let jsonOutput: string = "";
+      let run = await openai.beta.threads.runs.createAndPoll(threadId, {
+        assistant_id: assistantId,
+      });
 
-    const retrieveRun = async () => {
-      while (true) {
-        let currentRun = await openai.beta.threads.runs.retrieve(
-          threadId,
-          run.id
-        );
+      console.log({ run });
 
-        console.log({ currentRun: JSON.stringify(currentRun) });
+      let jsonOutput: string = "";
 
-        if (currentRun.status == "requires_action") {
-          // Extract single tool call
-          const toolCall =
-            currentRun.required_action?.submit_tool_outputs.tool_calls[0];
-          const output = JSON.stringify(toolCall?.function.arguments ?? "");
-
-          console.log({ toolCall: JSON.stringify(toolCall) });
-
-          console.log({
-            arguments: JSON.stringify(toolCall?.function.arguments),
-          });
-
-          jsonOutput = JSON.stringify(toolCall?.function.arguments);
-
-          currentRun = await openai.beta.threads.runs.submitToolOutputsAndPoll(
+      const retrieveRun = async (thisRun: OpenAI.Beta.Threads.Runs.Run) => {
+        while (true) {
+          let currentRun = await openai.beta.threads.runs.retrieve(
             threadId,
-            currentRun.id,
-            {
-              tool_outputs: [
+            thisRun.id
+          );
+
+          console.log({ currentRun: JSON.stringify(currentRun) });
+
+          if (currentRun.status == "requires_action") {
+            const toolCall =
+              currentRun.required_action?.submit_tool_outputs.tool_calls[0];
+            const output = JSON.stringify(toolCall?.function.arguments ?? "");
+
+            console.log({ toolCall: JSON.stringify(toolCall) });
+
+            console.log({
+              arguments: JSON.stringify(toolCall?.function.arguments),
+            });
+
+            jsonOutput = JSON.stringify(toolCall?.function.arguments);
+
+            currentRun =
+              await openai.beta.threads.runs.submitToolOutputsAndPoll(
+                threadId,
+                currentRun.id,
                 {
-                  tool_call_id: toolCall?.id,
-                  output,
-                },
-              ],
+                  tool_outputs: [
+                    {
+                      tool_call_id: toolCall?.id,
+                      output,
+                    },
+                  ],
+                }
+              );
+          } else if (currentRun.status === "completed") {
+            const allMessages =
+              await openai.beta.threads.messages.list(threadId);
+
+            const assistantMessage = allMessages.data.find(
+              (message) => message.role === "assistant"
+            );
+
+            const message = (assistantMessage?.content[0] as TextContentBlock)
+              .text.value;
+
+            console.log({ jsonOutput, message });
+
+            if (assistantMessage) {
+              const output = !!jsonOutput ? jsonOutput : message;
+              console.log({ output });
+              return output;
+            } else {
+              throw new Error("Assistant message not found.");
             }
-          );
-        } else if (currentRun.status === "completed") {
-          const allMessages = await openai.beta.threads.messages.list(threadId);
-
-          const assistantMessage = allMessages.data.find(
-            (message) => message.role === "assistant"
-          );
-          console.log({ allMessages: JSON.stringify(allMessages) });
-          console.log({ assistantMessage: JSON.stringify(assistantMessage) });
-
-          if (assistantMessage) {
-            return jsonOutput ?? assistantMessage.content;
+          } else if (
+            currentRun.status === "queued" ||
+            currentRun.status === "in_progress"
+          ) {
+            // Wait for a while before checking again
+            await setTimeout(3000);
           } else {
-            throw new Error("Assistant message not found.");
+            throw new Error(`Unexpected run status: ${currentRun.status}`);
           }
-        } else if (
-          currentRun.status === "queued" ||
-          currentRun.status === "in_progress"
-        ) {
-          // Wait for a while before checking again
-          await setTimeout(5000);
-        } else {
-          throw new Error(`Unexpected run status: ${currentRun.status}`);
         }
-      }
-    };
+      };
 
-    return await retrieveRun();
+      return await retrieveRun(run);
+    } else {
+      throw new Error("User message is required");
+    }
   } catch (error) {
     console.error("An error occurred:", error);
     throw error;
