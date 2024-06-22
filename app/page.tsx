@@ -34,7 +34,7 @@ export default function Home() {
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <div className="inline-block max-w-3xl text-center justify-center">
-        <h1 className={title({ color: "violet" })}>Earnings Report Q4-2024</h1>
+        <h1 className={title({ color: "violet" })}>Earnings Report Q1-2024</h1>
         <br />
         <h2 className={subtitle({ class: "mt-4" })}>
           Gather insights, summary, sentiment and earnings information!
@@ -43,7 +43,7 @@ export default function Home() {
 
       <div className="flex w-full justify-end">
         <Button color="default" variant="bordered" onClick={onOpen}>
-          Add an Earning Report
+          Add a new Earning Report
         </Button>
       </div>
 

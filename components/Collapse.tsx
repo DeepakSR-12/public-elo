@@ -18,7 +18,6 @@ export default function Collapse({
       fullWidth
       variant="splitted"
       aria-orientation="vertical"
-      defaultExpandedKeys={["Meta"]}
       motionProps={{
         variants: {
           enter: {
