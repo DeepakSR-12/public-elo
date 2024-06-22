@@ -49,6 +49,7 @@
 		"eslint-plugin-unused-imports": "^3.2.0",
 		"form": "^0.2.4",
 		"framer-motion": "~11.1.1",
+		"fs.promises": "^0.1.2",
 		"intl-messageformat": "^10.5.0",
 		"lucide-react": "^0.395.0",
 		"next": "14.2.3",

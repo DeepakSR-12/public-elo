@@ -133,6 +133,10 @@ export const formSchema = z.object({
   prompt: z.string().min(1, { message: "Prompt is required" }),
 });
 
+export const earningReportSchema = z.object({
+  companyName: z.string().min(1, { message: "Company Name is required" }),
+});
+
 export const MESSAGES = [
   {
     role: "assistant",

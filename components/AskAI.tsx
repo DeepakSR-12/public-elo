@@ -61,7 +61,7 @@ const AskAI = ({
         content: values.prompt,
       };
 
-      const response = await axios.post("/api/conversation", {
+      const response = await axios.post("/api/assistant", {
         message: values.prompt,
         assistantId,
       });

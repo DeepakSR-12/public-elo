@@ -1,13 +1,13 @@
 "use client";
 import Collapse from "@/components/Collapse";
+import EarningReportModal from "@/components/EarningReportModal";
 import { subtitle, title } from "@/components/primitives";
 import { mockEarningDataCompanies } from "@/constants";
-import { useEffect } from "react";
+import { Button } from "@nextui-org/button";
+import { useDisclosure } from "@nextui-org/react";
 
 export default function Home() {
-  useEffect(() => {
-    // trigger API call and store it in global state
-  }, []);
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const earningsData = mockEarningDataCompanies;
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
@@ -18,9 +18,20 @@ export default function Home() {
           Gather insights, summary, sentiment and earnings information!
         </h2>
       </div>
-      <div className="inline-block text-center max-w-6xl w-full justify-center">
+
+      <div className="flex w-full justify-end">
+        <Button color="default" variant="bordered" onClick={onOpen}>
+          Add an Earning Report
+        </Button>
+      </div>
+
+      <div className="inline-block text-center w-full justify-center">
         <Collapse earningsData={earningsData} />
       </div>
+
+      {!!isOpen ? (
+        <EarningReportModal isOpen={isOpen} onOpenChange={onOpenChange} closeModal={onClose} />
+      ) : null}
     </section>
   );
 }

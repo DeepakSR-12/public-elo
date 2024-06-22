@@ -41,7 +41,7 @@ const Summary = ({
   const fetchSummary = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post("/api/conversation", {
+      const response = await axios.post("/api/assistant", {
         message: "Generate a summary of the earnings report",
         assistantId,
       });

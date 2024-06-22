@@ -39,27 +39,27 @@ const Sentiment = ({
   }, []);
 
   const fetchSentiment = async () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setSentiment(
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a ty"
-      );
-      setIsLoading(false);
-      toast.success("Latest Sentiment is fetched!.");
-    }, 3000);
     // setIsLoading(true);
-    // try {
-    //   const response = await axios.post("/api/conversation", {
-    //     message: "Give a sentiment analysis on the earnings report.",
-    //     assistantId,
-    //   });
-    //   setSentiment(response.data);
-    // toast.success("Latest Sentiment is fetched!.");
-    // } catch (error: any) {
-    // toast.error("Something went wrong!");
-    // } finally {
+    // setTimeout(() => {
+    //   setSentiment(
+    //     "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a ty"
+    //   );
     //   setIsLoading(false);
-    // }
+    //   toast.success("Latest Sentiment is fetched!.");
+    // }, 3000);
+    setIsLoading(true);
+    try {
+      const response = await axios.post("/api/assistant", {
+        message: "Give a sentiment analysis on the earnings report.",
+        assistantId,
+      });
+      setSentiment(response.data);
+      toast.success("Latest Sentiment is fetched!.");
+    } catch (error: any) {
+      toast.error("Something went wrong!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
