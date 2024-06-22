@@ -44,7 +44,8 @@ const Summary = ({
     setIsLoading(true);
     try {
       const response = await axios.post("/api/assistant", {
-        message: "Generate a summary of the earnings report; Not in JSON;",
+        message:
+          "Generate a summary of the earnings report; RETURN RESULT ONLY IN STRING; NOT IN JSON;",
         assistantId,
         type: "summary",
         companyName,
@@ -96,17 +97,19 @@ const Summary = ({
           </Button>
         )}
       </div>
-      <div className="flex justify-end mt-auto">
-        <Button
-          isLoading={isLoading}
-          isDisabled={isLoading}
-          color="default"
-          variant="bordered"
-          onClick={fetchSummary}
-        >
-          Fetch Latest Summary
-        </Button>
-      </div>
+      {!!summary?.length ? (
+        <div className="flex justify-end mt-auto">
+          <Button
+            isLoading={isLoading}
+            isDisabled={isLoading}
+            color="default"
+            variant="bordered"
+            onClick={fetchSummary}
+          >
+            Fetch Latest Summary
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };

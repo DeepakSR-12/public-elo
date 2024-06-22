@@ -35,7 +35,7 @@ export async function createJsonAssistant(
   console.log({ companyName, vectorId });
   const myAssistant = await openai.beta.assistants.create({
     model: "gpt-3.5-turbo",
-    instructions: `Read and analyze the file and return a response using the calling function "get_earnings_report"`,
+    instructions: `Read and analyze the file and return only as a JSON response using the calling function "get_earnings_report; RETURN RESULT ONLY IN JSON; RETURN RESULT ONLY IN JSON;"`,
     name: `${companyName}-gpt`,
     tools: [
       {

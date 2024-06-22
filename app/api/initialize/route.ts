@@ -53,7 +53,7 @@ export async function POST(req: Request) {
           client,
           thread?.id,
           assistantId,
-          "Retrieve earnings report details for a company in JSON"
+          "Retrieve earnings report details for a company in JSON; RETURN RESULT ONLY IN JSON"
         );
 
         const parsedMessage =

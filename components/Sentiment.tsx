@@ -44,7 +44,8 @@ const Sentiment = ({
     setIsLoading(true);
     try {
       const response = await axios.post("/api/assistant", {
-        message: "Give a sentiment analysis on the earnings report.",
+        message:
+          "Give a sentiment analysis on the earnings report; RETURN RESULT ONLY IN STRING; NOT IN JSON;",
         assistantId,
         type: "sentiment",
         companyName,
@@ -93,17 +94,19 @@ const Sentiment = ({
           </Button>
         )}
       </div>
-      <div className="flex justify-end mt-auto">
-        <Button
-          isLoading={isLoading}
-          isDisabled={isLoading}
-          color="default"
-          variant="bordered"
-          onClick={fetchSentiment}
-        >
-          Fetch Latest Sentiment
-        </Button>
-      </div>
+      {!!sentiment?.length ? (
+        <div className="flex justify-end mt-auto">
+          <Button
+            isLoading={isLoading}
+            isDisabled={isLoading}
+            color="default"
+            variant="bordered"
+            onClick={fetchSentiment}
+          >
+            Fetch Latest Sentiment
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };

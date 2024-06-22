@@ -6,7 +6,7 @@ import {
   query,
   where,
 } from "firebase/firestore/lite";
-import db from "./db";
+import { db } from "./db";
 import { CompanyData } from "@/constants";
 
 export const retrieveCompaniesData = async () => {
@@ -51,7 +51,10 @@ export const updateCompany = async (
     const companiesCol = collection(db, "companies");
 
     // Check if the company already exists
-    const companyQuery = query(companiesCol, where("companyName", "==", companyName));
+    const companyQuery = query(
+      companiesCol,
+      where("companyName", "==", companyName)
+    );
     const companySnapshot = await getDocs(companyQuery);
 
     if (companySnapshot.empty) {

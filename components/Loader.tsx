@@ -11,7 +11,7 @@ const Loader = ({
   return (
     <div className="h-full gap-y-4 flex flex-col justify-center items-center">
       <div className="relative w-10 h-10 animate-bounce">
-        {icon ?? <Meta />}
+        <Meta />
       </div>
       <p className="text-sm text-muted-foreground text-center">{message}</p>
     </div>
