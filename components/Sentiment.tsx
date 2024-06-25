@@ -43,13 +43,16 @@ const Sentiment = ({
   const fetchSentiment = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post("/api/assistant", {
-        message:
-          "Give a sentiment analysis on the earnings report; RETURN RESULT ONLY IN STRING; NOT IN JSON;",
-        assistantId,
-        type: "sentiment",
-        companyName,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/assistant`,
+        {
+          message:
+            "Give a sentiment analysis on the earnings report; RETURN RESULT ONLY IN STRING; NOT IN JSON;",
+          assistantId,
+          type: "sentiment",
+          companyName,
+        }
+      );
       setSentiment(response.data);
       toast.success("Latest Sentiment is fetched!.");
     } catch (error: any) {

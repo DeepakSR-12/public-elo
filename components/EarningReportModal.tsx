@@ -54,11 +54,15 @@ export default function EarningReportModal({
         formData.append("earningReport", uploadedFile);
       }
 
-      await axios.post("/api/initialize", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/initialize`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       await fetchCompanies();
 

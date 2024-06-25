@@ -80,17 +80,19 @@ export default function Collapse({
               <div className="grid lg:grid-cols-2 gap-4 text-left py-4 px-2 text-sm">
                 {Object.keys(company.earningsReport)
                   .sort()
-                  .map((item) => (
-                    <div
-                      key={item}
-                      className="flex flex-row gap-2 p-2 text-wrap whitespace-nowrap"
-                    >
-                      <div className="">{dataLabel[item]}:</div>
-                      <div className="font-bold">
-                        {company.earningsReport[item]}
+                  .map((item) =>
+                    dataLabel[item] ? (
+                      <div
+                        key={item}
+                        className="flex flex-row gap-2 p-2 text-wrap whitespace-nowrap"
+                      >
+                        <div className="">{dataLabel[item]}:</div>
+                        <div className="font-bold">
+                          {company.earningsReport[item]}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ) : null
+                  )}
               </div>
             </div>
             <OptionsTabs {...company} />

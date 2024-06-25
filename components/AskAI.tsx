@@ -61,10 +61,13 @@ const AskAI = ({
         content: values.prompt,
       };
 
-      const response = await axios.post("/api/assistant", {
-        message: values.prompt,
-        assistantId,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/assistant`,
+        {
+          message: values.prompt,
+          assistantId,
+        }
+      );
 
       setMessages((current) => [
         ...current,
@@ -81,7 +84,7 @@ const AskAI = ({
 
   return (
     <div className="flex flex-col space-y-4 h-full">
-      <div ref={ref} className="flex max-h-[300px] h-full overflow-auto">
+      <div ref={ref} className="flex max-h-[400px] h-full overflow-auto">
         {!messages.length ? (
           <div className="h-full p-20 w-full">
             <div className="flex flex-col justify-center items-center">

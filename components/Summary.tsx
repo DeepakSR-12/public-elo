@@ -43,13 +43,16 @@ const Summary = ({
   const fetchSummary = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post("/api/assistant", {
-        message:
-          "Generate a summary of the earnings report; RETURN RESULT ONLY IN STRING; NOT IN JSON;",
-        assistantId,
-        type: "summary",
-        companyName,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/assistant`,
+        {
+          message:
+            "Generate a summary of the earnings report; RETURN RESULT ONLY IN STRING; NOT IN JSON;",
+          assistantId,
+          type: "summary",
+          companyName,
+        }
+      );
 
       if (!!response?.data) {
         setSummary(response.data);

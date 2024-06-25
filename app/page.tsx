@@ -18,8 +18,10 @@ export default function Home() {
   const fetchCompanies = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get("/api/companies");
-      if (response?.data?.companies) setEarningsData(response?.data?.companies);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/companies`
+      );
+      if (response?.data) setEarningsData(response?.data);
     } catch (err) {
       console.log(err);
     } finally {
